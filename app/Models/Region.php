@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * Régiók, megyék
  */
 
 namespace App\Models;
@@ -23,20 +23,23 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class Region extends Model
 {
-	protected $table = 'regions';
-	public $timestamps = false;
+    use HasFactory,
+        LogsActivity;
+    
+    protected $table = 'regions';
+    public $timestamps = false;
 
-	protected $casts = [
-		'country_id' => 'int'
-	];
+    protected $casts = [
+            'country_id' => 'int'
+    ];
 
-	protected $fillable = [
-		'name',
-		'code',
-		'country_id'
-	];
+    protected $fillable = [
+            'name',
+            'code',
+            'country_id'
+    ];
 
-	/**
+    /**
      * A tevékenység naplózásakor naplózott attribútumok.
      *
      * @var array<string>
@@ -62,6 +65,7 @@ class Region extends Model
      *
      * @return LogOptions
      */
+    #[\Override]
     public function getActivitylogOptions(): LogOptions
     {
         // Állítsa be az alapértelmezett naplózási beállításokat

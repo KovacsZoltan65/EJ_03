@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * Oszágok
  */
 
 namespace App\Models;
@@ -23,7 +23,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class Country extends Model
 {
 	use HasFactory,
-		LogsActivity;
+            LogsActivity;
 
 	protected $table = 'countries';
 	public $timestamps = false;
@@ -49,9 +49,9 @@ class Country extends Model
      * @var array<string>
      */
     protected static $recordEvents = [
-        'created', // Új könyv beillesztésekor
-        'updated',  // Amikor egy meglévő könyvet frissítenek
-        'deleted',  // Amikor egy könyvet törölnek
+        'created',
+        'updated',
+        'deleted',
     ];
 
 	/**
@@ -62,6 +62,7 @@ class Country extends Model
      *
      * @return LogOptions
      */
+    #[\Override]
     public function getActivitylogOptions(): LogOptions
     {
         // Állítsa be az alapértelmezett naplózási beállításokat

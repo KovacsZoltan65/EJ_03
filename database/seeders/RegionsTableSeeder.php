@@ -27248,8 +27248,6 @@ class RegionsTableSeeder extends Seeder
                 'code' => '08',
                 'country_id' => 229,
             ),
-        ));
-
-        
+        ));       
     }
 }

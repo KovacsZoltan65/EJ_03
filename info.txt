@@ -153,3 +153,16 @@ php artisan iseed regions
 php artisan iseed countries
 php artisan iseed cities
 
+======================
+= PERSON
+======================
+php artisan make:model Person
+php artisan make:controller PersonController --resource
+php artisan make:request StorePersonRequest
+php artisan make:request UpdatePersonRequest
+php artisan make:repository Persons
+php artisan make:criteria Persons
+php artisan make:migration CreatePersonsTable
+php artisan make:seeder PersonsSeeder
+php artisan make:factory PersonsFactory
+php artisan make:resource PersonsResource

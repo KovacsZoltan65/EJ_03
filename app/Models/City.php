@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Created by Reliese Model.
+ * Városok
  */
 
 namespace App\Models;
@@ -25,47 +25,47 @@ use Spatie\Activitylog\Traits\LogsActivity;
  */
 class City extends Model
 {
-	use HasFactory,
-		LogsActivity;
+    use HasFactory,
+        LogsActivity;
 
-	protected $table = 'cities';
-	public $timestamps = false;
+    protected $table = 'cities';
+    public $timestamps = false;
 
-	protected $casts = [
-		'region_id' => 'int',
-		'country_id' => 'int',
-		'latitude' => 'float',
-		'longitude' => 'float'
-	];
+    protected $casts = [
+        'region_id' => 'int',
+        'country_id' => 'int',
+        'latitude' => 'float',
+        'longitude' => 'float'
+    ];
 
-	protected $fillable = [
-		'region_id',
-		'country_id',
-		'latitude',
-		'longitude',
-		'name'
-	];
+    protected $fillable = [
+        'region_id',
+        'country_id',
+        'latitude',
+        'longitude',
+        'name'
+    ];
 
-	protected static $logAttributes = [
-		'region_id',
-		'country_id',
-		'latitude',
-		'longitude',
-		'name'
-	];
+    protected static $logAttributes = [
+        'region_id',
+        'country_id',
+        'latitude',
+        'longitude',
+        'name'
+    ];
 
-	/**
+    /**
      * A tevékenységnaplózást kiváltó esemény(ek).
      *
      * @var array<string>
      */
     protected static $recordEvents = [
-        'created', // Új könyv beillesztésekor
-        'updated',  // Amikor egy meglévő könyvet frissítenek
-        'deleted',  // Amikor egy könyvet törölnek
+        'created',
+        'updated',
+        'deleted',
     ];
 
-	/**
+    /**
      * A getActivitylogOptions metódus felülbírálása
      * 
      * Ezzel a módszerrel konfigurálhatóak a tevékenységnapló naplózási beállításai.
@@ -73,6 +73,7 @@ class City extends Model
      *
      * @return LogOptions
      */
+    #[\Override]
     public function getActivitylogOptions(): LogOptions
     {
         // Állítsa be az alapértelmezett naplózási beállításokat
