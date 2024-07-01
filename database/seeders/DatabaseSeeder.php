@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
             SeedsTableSeeder::class,
             SubdomainComponentsTableSeeder::class,
             SubdomainsTableSeeder::class,   // OK
+
+            //RegionsTableSeeder::class,
+            //CountriesTableSeeder::class
         ]);
     }
 }

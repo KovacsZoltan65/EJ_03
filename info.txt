@@ -132,5 +132,24 @@ php artisan code:models --schema=shop
 // ---------------------------------------
 composer require schubu/iseed --dev
 composer require cheesegrits/iseed --dev
-php artisan iseed 'books, ...'
+php artisan iseed books, ...
+
+// ---------------------------------------
+// REGIONS, CITIES, COUNTRIES
+// ---------------------------------------
+mysql -u root ej_03 < d:\wamp64\www\softc\EJ_03\world.sql
+mysql -u root hq_03 < d:\wamp64\www\softc\EJ_03\world.sql
+
+// migrations to mysql
+php artisan migrate:generate --tables="regions"
+php artisan migrate:generate --tables="countries"
+php artisan migrate:generate --tables="cities"
+// models to mysql
+php artisan code:models --table=regions
+php artisan code:models --table=countries
+php artisan code:models --table=cities
+// seeds to mysql
+php artisan iseed regions
+php artisan iseed countries
+php artisan iseed cities
 
