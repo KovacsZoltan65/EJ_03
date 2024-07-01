@@ -176,6 +176,21 @@
     "subdomains_delete_confirmation": "Biztosan törli a(z) :name aldomaint?",
     "subdomains_search_placeholder": "Keress az aldomainek között név vagy url szerint...",
 
+    "persons": "Személyek",
+    "person": "Személy",
+    "persons.new": "Új személy",
+    "persons.edit": "Személy szerkesztése",
+    "persons.create": "Személy rögzítése",
+    "persons.created": "A személy rögzítésre került",
+    "persons.update": "A személy frissítése",
+    "persons.updated": "A személy frissítve",
+    "persons.delete": "A személy törlése",
+    "persons.deleted": "A személy törölve",
+    "persons.restore": "A személy visszaállítása",
+    "persons.restored": "A személy törölve",
+    "persons.delete_confirmation": "Biztos, hogy törölni akarja a személyt?",
+    "persons.search_placeholder": "Keresés a személy adatai alapján",
+
     "companies": "Cégek",
 
     "external_admins": "Külső adminok",
@@ -208,5 +223,7 @@
     
     "validation.required": "A(z) :attribute megadása kötelező!",
     "validation.url": "A(z) :attribute érvénytelen link.",
-    "validation.integer": "A(z) :attribute értéke szám kell, hogy legyen!"
+    "validation.integer": "A(z) :attribute értéke szám kell, hogy legyen!",
+    
+    "error.not_implemented": "Még nincs megvalósítva"
 }

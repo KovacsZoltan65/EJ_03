@@ -176,6 +176,21 @@
     "subdomains_delete_confirmation": "Are you sure you want to delete this subdomain?",
     "subdomains_search_placeholder": "Search subdomains by name or url...",
     
+    "persons": "Persons",
+    "person": "Person",
+    "persons.new": "New Person",
+    "persons.edit": "Person Edit",
+    "persons.create": "Recording a person",
+    "persons.created": "The person has been recorded",
+    "persons.update": "Update the person",
+    "persons.updated": "The person is updated",
+    "persons.delete": "Delete the person",
+    "persons.deleted": "The person has been deleted",
+    "persons.restore": "Restore the person",
+    "persons.restored": "The person has been deleted",
+    "persons.delete_confirmation": "Are you sure you want to delete the person?",
+    "persons.search_placeholder": "Search based on the person's data",
+    
     "companies": "Companies",
 
     "external_admins": "External Admins",
@@ -207,5 +222,7 @@
     
     "validation.required": "The :attribute field is required.",
     "validation.url": "The :attribute format is invalid.",
-    "validation.integer": "The :attribute must be an integer."
+    "validation.integer": "The :attribute must be an integer.",
+    
+    "error.not_implemented": "Not implemented yet"
 }

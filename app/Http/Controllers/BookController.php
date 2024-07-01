@@ -141,7 +141,7 @@ class BookController extends Controller {
     public function store(StoreBookRequest $request) {
         $this->repository->create($request->validated());
 
-        return redirect()->back()->with('message', __('books_created'));
+        return redirect()->back()->with('message', __('books.created'));
     }
 
     /**
@@ -151,7 +151,7 @@ class BookController extends Controller {
      */
     public function show()
     {
-        throw new \BadMethodCallException('Not implemented.');
+        throw new \BadMethodCallException(__('error.not_implemented') );
     }
 
     /**
@@ -160,9 +160,12 @@ class BookController extends Controller {
      * @param  Book  $book
      * @return \Inertia\Response
      */
-    public function edit(Book $book) {
+    public function edit(Book $book)
+    {
+        $roles = $this->getUserRoles();
+        
         $data = [
-            'can' => $this->getUserRoles(),
+            'can' => $roles,
             'book' => $book,
         ];
         // Books/BookEdit => 'Books/Edit'
@@ -224,7 +227,7 @@ class BookController extends Controller {
              * @throws Illuminate\Database\Eloquent\ModelNotFoundException Ha nem található megfelelő puha törölt könyv.
              */
             $book = Book::onlyTrashed()->findOrFail($id);
-        } catch( ModelNotFoundException $e ) {
+        } catch(ModelNotFoundException $e ) {
             /**
              * Lekér egy lokalizált üzenetláncot a 'books_not_found' kifejezéshez.
              *
