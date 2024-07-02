@@ -2,19 +2,18 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\PersonsRepository;
-use App\Criteria\PersonCriteria;
+use App\Criteria\PersonsCriteria;
+use App\Interfaces\PersonsRepositoryInterface;
+use App\Models\Person;
 
-use App\Validators\PersonsValidator;
+//use App\Validators\PersonsValidator;
 
 /**
  * Class PersonsRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class PersonsRepository extends BaseRepository implements PersonsRepository
+class PersonsRepository extends BaseRepository implements PersonsRepositoryInterface
 {
     /**
      * Specify Model class name
@@ -23,7 +22,7 @@ class PersonsRepository extends BaseRepository implements PersonsRepository
      */
     public function model()
     {
-        return \App\Models\Person::class;
+        return Person::class;
     }
 
     
@@ -33,7 +32,7 @@ class PersonsRepository extends BaseRepository implements PersonsRepository
      */
     public function boot()
     {
-        $this->pushCriteria( PersonCriteria::class );
+        $this->pushCriteria( PersonsCriteria::class );
     }
     
 }

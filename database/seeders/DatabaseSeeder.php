@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             //RegionsTableSeeder::class,
             //CountriesTableSeeder::class
             //CitiesTableSeeder::class,
+            PersonsSeeder::class,
         ]);
     }
 }

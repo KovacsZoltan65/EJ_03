@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class PersonsFactory extends Factory
+class PersonFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,7 +22,7 @@ class PersonsFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->email(),
             'password' => fake()->password(),
-            'lang' => fake()->languageCode(),
+            'language' => fake()->languageCode(),
             'birthdate' => fake()->dateTimeBetween('1960-01-01', '2000-12-31'),
         ];
     }

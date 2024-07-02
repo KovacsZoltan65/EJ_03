@@ -14,9 +14,9 @@ class PersonsSeeder extends Seeder
     {
         \DB::table('persons')->truncate();
         
-        $this->command->warn(PHP_EOL . 'Creating persons...');
+        $this->command->warn(PHP_EOL . __('persons.create_title'));
         
-        $count = 1000;
+        $count = 500;
         
         $this->command->getOutput()->progressStart($count);
         
@@ -27,6 +27,6 @@ class PersonsSeeder extends Seeder
             $this->command->getOutput()->progressAdvance();
         }
         
-        $this->command->info(PHP_EOL . 'Persons created');
+        $this->command->info(PHP_EOL . __('persons.created_title'));
     }
 }

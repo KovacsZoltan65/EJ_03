@@ -180,8 +180,12 @@
     "person": "Személy",
     "persons.new": "Új személy",
     "persons.edit": "Személy szerkesztése",
+    
     "persons.create": "Személy rögzítése",
     "persons.created": "A személy rögzítésre került",
+    "persons.create_title": "Személyek létrehozása...",
+    "persons.created_title": "Személyek létrehozva",
+    
     "persons.update": "A személy frissítése",
     "persons.updated": "A személy frissítve",
     "persons.delete": "A személy törlése",

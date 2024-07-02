@@ -32,9 +32,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    // ------------
+    // -------------
     // BOOKS
-    // ------------
+    // -------------
     Route::post('/getBooks', [App\Http\Controllers\BookController::class, 'getBooks'])->name('getBooks');
     Route::post('/upload-books', [App\Http\Controllers\BookController::class, 'upload'])->name('upload-books');
     Route::resource('books', App\Http\Controllers\BookController::class)
@@ -47,9 +47,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         'restore' => 'books_restore',
     ]);
     
-    // ------------
+    // -------------
     // USERS
-    // ------------
+    // -------------
     Route::post('/getUsers', [App\Http\Controllers\Admin\UserController::class, 'getUsers'])->name('getUsers');
     
     //Route::post('/users_ChangeRole', [App\Http\Controllers\Admin\UserController::class, 'changeRoles'])->name('users_ChangeRole');
@@ -71,9 +71,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         'restore' => 'users_restore',
     ]);
     
-    // ------------
+    // -------------
     // ROLES
-    // ------------
+    // -------------
     Route::post('/getRoles', [\App\Http\Controllers\Admin\RoleController::class, 'getRoles'])->name('getRoles');
     Route::resource('/roles', \App\Http\Controllers\Admin\RoleController::class)
     ->names([
@@ -86,9 +86,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         'restore' => 'roles_restore',
     ]);
 
-    // ------------
+    // -------------
     // PERMISSIONS
-    // ------------
+    // -------------
     Route::post('/getPermissions', [\App\Http\Controllers\Admin\PermissionController::class, 'getPermissions'])->name('getPermissions');
     Route::resource('/permissions', \App\Http\Controllers\Admin\PermissionController::class)
     ->names([
@@ -101,9 +101,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         'restore' => 'permissions_restore',
     ]);
     
-    // ------------
+    // -------------
     // SUBDOMAINS
-    // ------------
+    // -------------
     Route::post('/getSubdomains', [\App\Http\Controllers\SubdomainController::class, 'getSubdomains'])->name('getSubdomains');
     
     Route::resource('/subdomains', \App\Http\Controllers\SubdomainController::class)
@@ -117,15 +117,30 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
         'restore' => 'subdomains_restore',
     ]);
 
-    // ------------
+    // -------------
     // COMPANIES
-    // ------------
+    // -------------
     Route::get('/companies', function() { dd('Fejlesztés alatt'); })->name('companies.index');
 
-    // ------------
+    // -------------
     // KÜLSŐ ADMINOK
-    // ------------
+    // -------------
     Route::get('/external_admins', function() { dd('Fejlesztés alatt'); })->name('external_admins.index');
+
+    // -------------
+    // PERSONS
+    // -------------
+    Route::get('/getPersons', [\App\Http\Controllers\PersonController::class, 'getPersons'])->name('getPersons');
+    Route::resource('/persons', \App\Http\Controllers\PersonController::class)
+    ->names([
+          'index' => 'persons',
+         'create' => 'persons_create',
+          'store' => 'persons_store',
+           'edit' => 'persons_edit',
+         'update' => 'persons_update',
+        'destroy' => 'persons_destroy',
+        'restore' => 'persons_restore',
+    ]);
 });
 
 Route::group(['namespace' => 'App\Http\Controllers\Admin', 'prefix' => 'admin', 'middleware' => ['auth']],

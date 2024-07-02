@@ -4,32 +4,95 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePersonRequest;
 use App\Http\Requests\UpdatePersonRequest;
-use App\Interfaces\PersonRepositoryInterface;
+use App\Interfaces\PersonsRepositoryInterface;
 use App\Models\Person;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PersonController extends Controller
 {
     private $repository;
     
-    public function __construct(PersonRepositoryInterface $repository) {
+    /**
+     * PersonController konstruktor.
+     *
+     * @param PersonRepositoryInterface $repository Az aldomain modell tárháza.
+     */
+    public function __construct(PersonsRepositoryInterface $repository) {
+        // A tárolót beinjektálják, és egy osztály tulajdonságában tárolják későbbi használatra.
         $this->repository = $repository;
         
-        $this->middleware('can: list',    ['only' => ['index', 'show']]);
-        $this->middleware('can: create',  ['only' => ['create', 'store']] );
-        $this->middleware('can: edit',    ['only' => ['edit', 'update']]);
-        $this->middleware('can: delete',  ['only' => ['destroy']]);
-        $this->middleware('can: restore', ['only' => ['restore']]);
+        // A PersonController ezt a tárolót fogja használni a CRUD műveletek 
+        // végrehajtására az altartományi modellen.
+        
+        // A middleware beállítása, hogy csak akkor engedélyezze a "person list"
+        // jogosultságú felhasználók számára a "index" és "show" metódusok
+        // elérését, ha a felhasználó rendelkezik ezzel a jogosultsággal.
+        // 
+        // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
+        // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
+        $this->middleware('can:person list', [
+            'only' => ['index', 'show'],
+        ]);
+        
+        // A middleware beállítása, hogy csak akkor engedélyezze a "person create"
+        // jogosultságú felhasználók számára a "create" és "store" metódusok
+        // elérését, ha a felhasználó rendelkezik ezzel a jogosultsággal.
+        // 
+        // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
+        // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
+        $this->middleware('can:person create', [
+            'only' => ['create', 'store'],
+        ]);
+        
+        // A middleware beállítása, hogy csak akkor engedélyezze a "person edit"
+        // jogosultságú felhasználók számára a "edit" és "update" metódusok
+        // elérését, ha a felhasználó rendelkezik ezzel a jogosultsággal.
+        // 
+        // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
+        // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
+        $this->middleware('can:person edit', [
+            'only' => ['edit', 'update'],
+        ]);
+        
+        // A middleware beállítása, hogy csak akkor engedélyezze a "person delete"
+        // jogosultságú felhasználók számára a "destroy" metódus elérését, ha a 
+        // felhasználó rendelkezik ezzel a jogosultsággal.
+        // 
+        // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
+        // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
+        $this->middleware('can:person delete', [
+            'only' => ['destroy'],
+        ]);
+        
+        // A middleware beállítása, hogy csak akkor engedélyezze a "person restore"
+        // jogosultságú felhasználók számára a "restore" metódus elérését, ha a 
+        // felhasználó rendelkezik ezzel a jogosultsággal.
+        // 
+        // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
+        // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
+        $this->middleware('can:person restore', [
+            'only' => ['restore'],
+        ]);
     }
     
     /**
-     * Display a listing of the resource.
+     * Jelenítse meg az erőforrás listáját.
+     *
+     * Ez a módszer a „Személyek/index” nézetet a „can” változóval jeleníti meg
+     * a felhasználó szerepköreit tartalmazza.
+     *
+     * @return \Inertia\Response
      */
     public function index()
     {
+        // Szerezze meg a felhasználói szerepköröket
         $roles = $this->getUserRoles();
         
+        // Jelenítse meg a „Személyek/Index” nézetet a „can” változóval
         return Inertia::render('Persons/Index', [
             'can' => $roles,
         ]);
@@ -38,88 +101,155 @@ class PersonController extends Controller
     public function getPersons(){}
     
     /**
-     * Show the form for creating a new resource.
+     * Mutassa meg az űrlapot az új erőforrás létrehozásához.
+     *
+     * Ez a módszer a „Persons/Create” nézetet jeleníti meg a „can” változóval
+     * amely a felhasználó szerepköreit tartalmazza, a 'persons' változó pedig egy újat tartalmaz
+     * Személy példány.
+     *
+     * @return \Inertia\Response
      */
     public function create()
     {
+        // Szerezze meg a felhasználói szerepköröket
+        $roles = $this->getUserRoles();
+
+        // Jelenítse meg a 'Persons/Create' nézetet a 'can' változóval és egy új Személy-példánnyal
         return Inertia::render('Persons/Create', [
-            'can' => '',
-            'persons' => new Person(),
+            'can' => $roles, // Tartalmazza a felhasználó szerepköreit
+            'persons' => new Person(), // Új személy példányt tartalmaz
         ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Tároljon egy újonnan létrehozott erőforrást a tárhelyen.
+     *
+     * Ez a metódus új személypéldányt hoz létre a következőből származó ellenőrzött adatok felhasználásával
+     * kérjen le és tárolja a tárolóban. Ezt követően átirányítja a felhasználót
+     * vissza az előző oldalra egy sikerüzenettel.
+     *
+     * @param StorePersonRequest $request Az érvényesített adatokat tartalmazó kérelem objektum
+     * @return RedirectResponse
      */
     public function store(StorePersonRequest $request)
     {
+        // Hozzon létre egy új Személy-példányt a kérelemben szereplő ellenőrzött adatok felhasználásával
         $this->repository->create($request->validated());
         
+        // Visszairányítja a felhasználót az előző oldalra egy sikerüzenettel
         return redirect()->back()->with('message', __('persons.created'));
     }
 
     /**
-     * Display the specified resource.
+     * Jelenítse meg a megadott erőforrást.
+     *
+     * Ez a metódus jelenleg nincs implementálva, és BadMethodCallException kivételt dob
+     * nem implementált hibaüzenettel.
+     *
+     * @param string $id A megjelenítendő személy azonosítója
+     * @return void
+     * @throws \BadMethodCallException
      */
     public function show(string $id)
     {
+        // Adjon meg egy BadMethodCallException-t egy "nem implementált" hibaüzenettel
         throw new \BadMethodCallException(__('error.not_implemented') );
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Jelenítse meg az űrlapot a megadott erőforrás szerkesztéséhez.
+     *
+     * @param Person $person A szerkesztendő személy
+     * @return \Inertia\Response A „Persons/Edit” nézet a „can” és „person” adatokkal
      */
     public function edit(Person $person)
     {
+        // Szerezze meg a felhasználói szerepköröket
         $roles = $this->getUserRoles();
         
+        // Készítse elő a nézetbe továbbítandó adatokat
         $data = [
-            'can' => $roles,
-            'person' => $person,
+            'can' => $roles, // Tartalmazza a felhasználó szerepköreit
+            'person' => $person, // A szerkesztendő személyt tartalmazza
         ];
         
+        // Jelenítse meg a „Persons/Edit” nézetet az adatokkal
         return Inertia::render('Persons/Edit', $data);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Frissítse a megadott személyt a tárhelyen.
+     *
+     * Ez a módszer az érvényesített adatok felhasználásával frissíti a megadott azonosítóval rendelkező személyt
+     * a kérésből. Ezután a frissített JSON-választ adja vissza
+     * 200-as állapotkóddal rendelkező személy.
+     *
+     * @param UpdatePersonRequest $request Az érvényesített adatokat tartalmazó kérelem objektum
+     * @param int $id A frissítendő személy azonosítója
+     * @return JsonResponse A frissített személy 200-as állapotkóddal
      */
     public function update(UpdatePersonRequest $request, int $id)
     {
+        // Frissítse a megadott azonosítóval rendelkező személyt a kérelemben szereplő érvényes adatok felhasználásával
         $person = $this->repository->update($request->validated(), $id);
         
+        // 200-as állapotkóddal küldjön vissza egy JSON-választ, amely tartalmazza a frissített személyt
         return response()->json($person, Response::HTTP_OK);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Törölje a megadott személyt a tárhelyről.
+     *
+     * Ez a módszer törli az adott azonosítóval rendelkező személyt a tárból.
+     * Ezt követően sikeres üzenettel visszairányítja a felhasználót az előző oldalra.
+     *
+     * @param int $id A törölni kívánt személy azonosítója
+     * @return RedirectResponse
      */
     public function destroy(int $id)
     {
+        // A megadott azonosítóval rendelkező személy törlése az adattárból
         $this->repository->delete($id);
         
+        // Visszairányítja a felhasználót az előző oldalra egy sikerüzenettel
         return redirect()->back()->with('message', __('persons.deleted'));
     }
     
+    /**
+     * Helyezze vissza a megadott személyt a tárhelyből.
+     *
+     * Ez a módszer megpróbálja megtalálni a soft-törölt személyt a megadott azonosítóval és
+     * visszaállítani. Ha a személy nem található, az átirányítás hibával tér vissza
+     * üzenet. Ha bármilyen más kivétel történik a folyamat során, az csendben történik
+     * figyelmen kívül hagyva. Végül egy átirányítást ad vissza egy sikerüzenettel.
+     *
+     * @param int $id A visszaállítandó személy azonosítója
+     * @return RedirectResponse
+     */
     public function restore(int $id)
     {
         try
         {
+            // Keresse meg a programozottan törölt személyt a megadott azonosítóval
             $person = Person::onlyTrashed()->findOrFail($id);
+            
+            // Állítsa vissza a személyt
+            $person->restore();
+
+            // Átirányítás visszaküldése sikerüzenettel
+            return redirect()->back()->with('message', __('books_restored'));
         }
         catch(ModelNotFoundException $e )
         {
+            // Ha a személy nem található, küldjön vissza egy átirányítást hibaüzenettel
             $message = __('persons_not_found');
+
             return redirect()->back()->with('error', $message);
         }
         catch( \Exception $e )
         {
-            //
+            // Az egyéb kivételeket figyelmen kívül hagyja
         }
-        
-        $book->restore();
-        
-        return redirect()->back()->with('message', __('books_restored'));
     }
     
     /**

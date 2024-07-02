@@ -28,25 +28,30 @@
             </template>
 
             <template #content>
+
                 <!-- Account Management -->
                 <div class="block px-4 py-2 text-xs text-gray-400">
                     {{ $t('manage_admin') }}
                 </div>
+
                 <!-- users menu -->
                 <DropdownLink :href="route('user.index')"
                               :active="route().current('user.index')">
                     {{ $t('users') }}
                 </DropdownLink>
+
                 <!-- permissions menu -->
                 <DropdownLink :href="route('permission.index')" 
                               :active="route().current('permission.index')">
                     {{ $t('permissions') }}
                 </DropdownLink>
+
                 <!-- roles menu -->
                 <DropdownLink :href="route('role.index')" 
                               :active="route().current('role.index')">
                     {{ $t('roles') }}
                 </DropdownLink>
+
             </template>
         </Dropdown>
 
@@ -94,6 +99,12 @@
         <NavLink :href="route('books')" 
                  :active="route().current('books')">
             {{ $t('books') }}
+        </NavLink>
+
+        <!-- persons menu -->
+        <NavLink :href="route('persons')" 
+                 :active="route().current('persons')">
+            {{ $t('persons') }}
         </NavLink>
 
         <!-- users menu -->

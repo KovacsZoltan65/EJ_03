@@ -180,8 +180,12 @@
     "person": "Person",
     "persons.new": "New Person",
     "persons.edit": "Person Edit",
+    
     "persons.create": "Recording a person",
     "persons.created": "The person has been recorded",
+    "persons.create_title": "Creating persons...",
+    "persons.created_title": "Persons created",
+    
     "persons.update": "Update the person",
     "persons.updated": "The person is updated",
     "persons.delete": "Delete the person",

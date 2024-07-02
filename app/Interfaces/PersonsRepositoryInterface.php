@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Iterfaces;
+namespace App\Interfaces;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 
@@ -9,7 +9,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  *
  * @package namespace App\Repositories;
  */
-interface PersonsRepository extends RepositoryInterface
+interface PersonsRepositoryInterface extends RepositoryInterface
 {
     //
 }
