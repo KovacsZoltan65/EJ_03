@@ -502,6 +502,7 @@
                                             </a>
                                         </div>
                                     </th>
+
                                     <!-- PASSWORD -->
                                     <th scope="col" class="px-6 py-3" v-show="state.columns.password.is_visible">
                                         <div class="flex items-center">
@@ -564,8 +565,20 @@
                                     <td class="px-4 py-2 w-45 border" width="250px" 
                                         v-show="state.columns.action.is_visible">
                                         <div type="justify-start lg:justify-end" no-wrap>
-                                            <green-button class="mt-1" size="text-xs" @click="editPerson(person)">{{ $t('edit') }}</green-button>
-                                            <red-button class="mt-1" size="text-xs" @click="deletePerson_init(person)">{{ $t('delete') }}</red-button>
+                                            
+                                            <!-- szerkesztés -->
+                                            <!--<green-button class="mt-1" 
+                                                          size="text-xs" 
+                                                          @click="editPerson(person)"
+                                            >{{ $t('edit') }}</green-button>-->
+                                            <green-link :href="route('persons_edit', person.id)">{{ $t('edit') }}</green-link>
+
+                                            <!-- törlés -->
+                                            <red-button class="mt-1" 
+                                                        size="text-xs" 
+                                                        @click="deletePerson_init(person)"
+                                            >{{ $t('delete') }}</red-button>
+
                                         </div>
                                     </td>
                                 </tr>

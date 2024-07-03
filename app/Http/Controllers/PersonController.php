@@ -36,9 +36,9 @@ class PersonController extends Controller
         // 
         // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
         // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
-        $this->middleware('can:person list', [
-            'only' => ['index', 'show'],
-        ]);
+        //$this->middleware('can:person list', [
+        //    'only' => ['index', 'show'],
+        //]);
         
         // A middleware beállítása, hogy csak akkor engedélyezze a "person create"
         // jogosultságú felhasználók számára a "create" és "store" metódusok
@@ -46,9 +46,9 @@ class PersonController extends Controller
         // 
         // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
         // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
-        $this->middleware('can:person create', [
-            'only' => ['create', 'store'],
-        ]);
+        //$this->middleware('can:person create', [
+        //    'only' => ['create', 'store'],
+        //]);
         
         // A middleware beállítása, hogy csak akkor engedélyezze a "person edit"
         // jogosultságú felhasználók számára a "edit" és "update" metódusok
@@ -56,9 +56,9 @@ class PersonController extends Controller
         // 
         // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
         // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
-        $this->middleware('can:person edit', [
-            'only' => ['edit', 'update'],
-        ]);
+        //$this->middleware('can:person edit', [
+        //    'only' => ['edit', 'update'],
+        //]);
         
         // A middleware beállítása, hogy csak akkor engedélyezze a "person delete"
         // jogosultságú felhasználók számára a "destroy" metódus elérését, ha a 
@@ -66,9 +66,9 @@ class PersonController extends Controller
         // 
         // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
         // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
-        $this->middleware('can:person delete', [
-            'only' => ['destroy'],
-        ]);
+        //$this->middleware('can:person delete', [
+        //    'only' => ['destroy'],
+        //]);
         
         // A middleware beállítása, hogy csak akkor engedélyezze a "person restore"
         // jogosultságú felhasználók számára a "restore" metódus elérését, ha a 
@@ -76,9 +76,9 @@ class PersonController extends Controller
         // 
         // A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
         // a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
-        $this->middleware('can:person restore', [
-            'only' => ['restore'],
-        ]);
+        //$this->middleware('can:person restore', [
+        //    'only' => ['restore'],
+        //]);
     }
     
     /**
@@ -191,8 +191,9 @@ class PersonController extends Controller
      */
     public function store(StorePersonRequest $request)
     {
+\Log::info('PersonController@store' . print_r($request->validated(), true));
         // Hozzon létre egy új Személy-példányt a kérelemben szereplő ellenőrzött adatok felhasználásával
-        $this->repository->create($request->validated());
+        //$this->repository->create($request->validated());
         
         // Visszairányítja a felhasználót az előző oldalra egy sikerüzenettel
         return redirect()->back()->with('message', __('persons.created'));
@@ -222,6 +223,7 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
+\Log::info('$person: ' . print_r($person, true));
         // Szerezze meg a felhasználói szerepköröket
         $roles = $this->getUserRoles();
         

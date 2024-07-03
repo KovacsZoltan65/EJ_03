@@ -1,14 +1,11 @@
 <script setup>
-    import { reactive, onMounted, watch, ref } from 'vue';
     import { useForm } from '@inertiajs/vue3';
 
     import AppLayout from '@/Layouts/AppLayout.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import InputError from '@/Components/InputError.vue';
     import TextInput from '@/Components/TextInput.vue';
-    import DefaultButton from '@/Components/buttons/DefaultButton.vue';
     import GreenButton from '@/Components/buttons/GreenButton.vue';
-    //import GreenLink from '@/Components/linkbuttons/GreenLink.vue';
     import DefaultLink from '@/Components/linkbuttons/DefaultLink.vue';
 
     import { trans } from 'laravel-vue-i18n';
@@ -17,15 +14,10 @@
 
     const alerta = Swal.mixin({
         buttonStyling: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33'
     });
 
     const save_alert = Swal.mixin({
         buttonStyling: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        icon: 'question'
     });
 
     // Tulajdonságok
@@ -49,27 +41,35 @@
 
     });
 
-    //onMounted(() => {
-    //    console.log('Person:', props.person);
-    //});
-
     const submit = () => {
-        form.patch(route('persons_update', props.person.id),{
+        form.post( route('persons_store'), {
             onSuccess: (response) => {
-                save_alert.fire({})
+                save_alert
+                .fire({
+                    text: trans('save_success'),
+                    confirmButtonText: trans('back_to_list'),
+                    showDenyButton: true,
+                    denyButtonText: trans('persons.new')
+                })
                 .then((result) => {
-                    if (result.isConfirmed) {
-                        //
-                    }else if( result.isDenied ) {
-                        //
-                    }else if( result.isDismissed ) {
-                        //
+                    if( result.isConfirmed ){
+                        console.log('vissza a listához');
+                        window.location.href = route('persons');
+                    }else if( result.isDenied ){
+                        console.log('isDenied');
+                    }else if( result.isDismissed ){
+                        console.log('isDismissed');
                     }
                 });
             },
-            onFinish: (values) => {},
-            onError: (errors) => {},
-            preserveScroll: true
+            onFinish: (values) => {
+                console.log('onFinish', values);
+                form.reset();
+            },
+            onError: (errors) => {
+                console.log('onError', errors);
+            },
+            preserveScroll: true,
         });
     };
 
@@ -101,7 +101,7 @@
                                            text-gray-900 dark:text-white"
                                 >{{ $t('name') }}</InputLabel>
                                 <TextInput 
-                                    v-model="form.person" type="text" 
+                                    v-model="form.name" type="text" 
                                     id="name" name="name" 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 
                                             text-sm rounded-lg focus:ring-blue-500 
@@ -119,7 +119,7 @@
                                                    dark:text-white"
                                 >{{ $t('email') }}</InputLabel>
                                 <TextInput v-model="form.email"
-                                    type="url" id="email" name="email" 
+                                    type="email" id="email" name="email" 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 
                                             text-sm rounded-lg focus:ring-blue-500 
                                             focus:border-blue-500 block w-full p-2.5 
@@ -136,49 +136,49 @@
                         <div class="grid gap-6 mb-6 md:grid-cols-3">
                             
                             <div>
-                                <InputLabel for="name" 
+                                <InputLabel for="password" 
                                     class="block mb-2 text-sm font-medium 
                                            text-gray-900 dark:text-white"
-                                >{{ $t('name') }}</InputLabel>
-                                <TextInput 
-                                    v-model="form.person" type="text" 
-                                    id="name" name="name" 
+                                >{{ $t('password') }}</InputLabel>
+                                <TextInput v-model="form.password" type="password" 
+                                    id="password" name="password" 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 
                                             text-sm rounded-lg focus:ring-blue-500 
                                             focus:border-blue-500 block w-full p-2.5 
                                             dark:bg-gray-700 dark:border-gray-600 
                                             dark:placeholder-gray-400 dark:text-white 
                                             dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                    placeholder="name" required />
-                                <InputError />
+                                    placeholder="password" required />
+                                <InputError :message="form.errors.password" />
                             </div>
 
                             <div>
-                                <InputLabel for="name" 
+                                <InputLabel for="language" 
                                     class="block mb-2 text-sm font-medium 
                                            text-gray-900 dark:text-white"
-                                >{{ $t('name') }}</InputLabel>
-                                <TextInput v-model="form.person" type="text" 
-                                    id="name" name="name" 
+                                >{{ $t('language') }}</InputLabel>
+                                <TextInput 
+                                    v-model="form.language" type="text" 
+                                    id="language" name="language" 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 
                                             text-sm rounded-lg focus:ring-blue-500 
                                             focus:border-blue-500 block w-full p-2.5 
                                             dark:bg-gray-700 dark:border-gray-600 
                                             dark:placeholder-gray-400 dark:text-white 
                                             dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                                    placeholder="name" required />
-                                <InputError :message="form.errors.name" />
+                                    placeholder="language"/>
+                                <InputError :message="form.errors.language" />
                             </div>
 
                             <div>
                                 <InputLabel 
-                                    for="name" 
+                                    for="birthdate" 
                                     class="block mb-2 text-sm font-medium 
                                            text-gray-900 dark:text-white"
-                                >{{ $t('name') }}</InputLabel>
+                                >{{ $t('birthdate') }}</InputLabel>
                                 <TextInput 
-                                    v-model="form.person" type="text" 
-                                    id="name" name="name" 
+                                    v-model="form.birthdate" type="date" 
+                                    id="birthdate" name="birthdate" 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 
                                             text-sm rounded-lg focus:ring-blue-500 
                                             focus:border-blue-500 block w-full p-2.5 
@@ -186,7 +186,7 @@
                                             dark:placeholder-gray-400 dark:text-white 
                                             dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     placeholder="name" required />
-                                <InputError :message="form.errors.name" />
+                                <InputError :message="form.errors.birthdate" />
                             </div>
 
                         </div>

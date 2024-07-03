@@ -37,9 +37,9 @@ class SubdomainController extends Controller {
          * Továbbá a middleware-t az alábbi kód sorban állítjuk be, hogy a konstruktor
          * végén végrehajtsa a middleware-t.
          */
-        $this->middleware('can:subdomain list', [
-            'only' => ['index', 'show'],
-        ]);
+        //$this->middleware('can:subdomain list', [
+        //    'only' => ['index', 'show'],
+        //]);
 
         /**
          * A middleware beállítása, hogy csak akkor engedélyezze a "subdomain create"
@@ -49,9 +49,9 @@ class SubdomainController extends Controller {
          * A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
          * a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
          */
-        $this->middleware('can:subdomain create', [
-            'only' => ['create', 'store'],
-        ]);
+        //$this->middleware('can:subdomain create', [
+        //    'only' => ['create', 'store'],
+        //]);
 
         /**
          * A middleware beállítása, hogy csak akkor engedélyezze a "subdomain edit"
@@ -61,9 +61,9 @@ class SubdomainController extends Controller {
          * A "only" kulcsszó használatával csak ezeket a metódusokat szűrjük ki ebből
          * a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
          */
-        $this->middleware('can:subdomain edit', [
-            'only' => ['edit', 'update'],
-        ]);
+        //$this->middleware('can:subdomain edit', [
+        //    'only' => ['edit', 'update'],
+        //]);
 
 
         /**
@@ -75,9 +75,9 @@ class SubdomainController extends Controller {
          * a middleware-ből, és a "can" middleware-t csak ezekre azokat alkalmazza.
          * 
          */
-        $this->middleware('can:subdomain destroy', [
-            'only' => ['destroy'],
-        ]);
+        //$this->middleware('can:subdomain destroy', [
+        //    'only' => ['destroy'],
+        //]);
 
 
        /**
@@ -88,9 +88,9 @@ class SubdomainController extends Controller {
          * A "only" kulcsszó használatával csak ezt a metódust szűrjük ki ebből
          * a middleware-ből, és a "can" middleware-t csak erre azokat alkalmazza.
         */
-        $this->middleware('can:subdomain restore', [
-            'only' => ['restore'],
-        ]);
+        //$this->middleware('can:subdomain restore', [
+        //    'only' => ['restore'],
+        //]);
     }
 
     /**
@@ -198,8 +198,8 @@ class SubdomainController extends Controller {
     //}
 
     public function store(StoreSubdomainRequest $request) {
-        //dd($request);
-        $subdomain = $this->repository->create($request->all());
+\Log::info('Subdomain store');
+        //$subdomain = $this->repository->create($request->all());
 
         return redirect()->back()->with('message', __('subdomain_created'));
     }

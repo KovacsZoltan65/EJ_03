@@ -459,6 +459,7 @@
 
                                     <td class="px-4 py-2 w-45 border items-center" width="250px" v-show="state.columns.action.is_visible">
                                         <div class="flex items-center">
+                                            
                                             <!-- SZERKESZTÉS -->
                                             <green-link v-if="can.edit" 
                                                         :href="route('subdomains_edit', subdomain.id)"
