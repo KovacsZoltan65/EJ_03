@@ -130,7 +130,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     // -------------
     // PERSONS
     // -------------
-    Route::get('/getPersons', [\App\Http\Controllers\PersonController::class, 'getPersons'])->name('getPersons');
+    Route::post('/getPersons', [\App\Http\Controllers\PersonController::class, 'getPersons'])->name('getPersons');
+    //Route::get('/getPersons', function(){ dd('getPersons'); })->name('getPersons');
     Route::resource('/persons', \App\Http\Controllers\PersonController::class)
     ->names([
           'index' => 'persons',

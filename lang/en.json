@@ -27,6 +27,9 @@
     "delete_confirmation": "Confirm deletion",
 
     "languages": "Languages",
+    "language": "Language",
+
+    "birthdate": "Birthdate",
 
     "back": "Back",
     "back_to_home": "Back to home",
@@ -177,6 +180,7 @@
     "subdomains_search_placeholder": "Search subdomains by name or url...",
     
     "persons": "Persons",
+    "persons.description": "Persons Description",
     "person": "Person",
     "persons.new": "New Person",
     "persons.edit": "Person Edit",

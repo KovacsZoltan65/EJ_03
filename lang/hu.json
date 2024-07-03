@@ -27,6 +27,9 @@
     "delete_confirmation": "Törlés megerősítése",
 
     "languages": "Nyelvek",
+    "language": "Nyelv",
+
+    "birthdate": "Születésnap",
 
     "back": "Vissza",
     "back_to_home": "Vissza a fő oldalra",
@@ -177,6 +180,7 @@
     "subdomains_search_placeholder": "Keress az aldomainek között név vagy url szerint...",
 
     "persons": "Személyek",
+    "persons.description": "Személyek részletei",
     "person": "Személy",
     "persons.new": "Új személy",
     "persons.edit": "Személy szerkesztése",

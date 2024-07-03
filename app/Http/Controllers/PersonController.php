@@ -11,6 +11,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class PersonController extends Controller
 {
@@ -98,7 +100,62 @@ class PersonController extends Controller
         ]);
     }
 
-    public function getPersons(){}
+    public function getPersons(Request $request){
+        // Beállítások
+        $config = $request->get('config', []);
+        // Szűrők és keresések
+        $filters = $request->get('filters', []);
+        
+        // Szűrés kezelése
+        if (count($filters) > 0) {
+            // Ha van keresési paraméter, akkor...
+            if (isset($filters['search'])) {
+                // A keresési paramétert átteszem egy változóba
+                $value = $filters['search'];
+
+                // Keresési paraméter érvégyesítése az 'author' és 'title' mezőkre
+                $this->repository->where('author', 'LIKE', "%$value%");
+                $this->repository->orWhere('title', 'LIKE', "%$value%");
+            }
+
+            // ----------------
+            // RENDEZÉS
+            // ----------------
+            // Rendezés a 'name' oszlop szerint
+            $column = 'id';
+            // Ha van más beállítás, akkor...
+            if (isset($filters['column'])) {
+                // azt állítom be
+                $column = $filters['column'];
+            }
+
+            // Alap rendezési irány
+            $direction = 'asc';
+            // Ha van más beállítás, akkor...
+            if (isset($filters['direction'])) {
+                // azt állítom be
+                $direction = $filters['direction'];
+            }
+            // Rendezés érvényesítése
+            $this->repository->orderBy($column, $direction);
+        }
+
+        // Oldaltörés értékének kezelése
+        $per_page = count($config) != 0 && isset($config['per_page']) ? $config['per_page'] : config('app.per_page');
+
+        // Adatok lekérése
+        $persons = $this->repository->paginate($per_page);
+        
+        // Adatcsomag összeállítása
+        $data = [
+            'persons' => $persons,
+            'config' => $config,
+            'filters' => $filters,
+        ];
+        
+        // Adatcsomag visszaküldése
+        return response()->json($data, Response::HTTP_OK);
+    }
     
     /**
      * Mutassa meg az űrlapot az új erőforrás létrehozásához.
