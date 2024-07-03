@@ -73,24 +73,6 @@
         access_control_system: props.subdomain.access_control_system,
         last_export:  props.subdomain.last_export
     });
-    /*
-    const form = useForm({
-        subdomain: '',
-        url: 'http://127.0.0.1:8000',
-        name: '',
-        db_host: 'localhost',
-        db_port: '3306',
-        db_name: '',
-        db_user: '',
-        db_password: '',
-        notification: true,
-        state_id: 1,
-        is_mirror: false,
-        sso: false,
-        access_control_system: 0,
-        last_export: ''
-    });
-    */
 
     // Mentés
     const submit = () => {
@@ -179,10 +161,12 @@
                                 >{{ $t('subd_url') }}</InputLabel>
                                 <TextInput v-model="form.url"
                                     type="url" id="url" name="url" 
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                            focus:ring-blue-500 focus:border-blue-500 
-                                            block w-full p-2.5 
-                                            dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 
+                                            text-sm rounded-lg focus:ring-blue-500 
+                                            focus:border-blue-500 block w-full p-2.5 
+                                            dark:bg-gray-700 dark:border-gray-600 
+                                            dark:placeholder-gray-400 dark:text-white 
+                                            dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                     placeholder="Url" required />
                                 <InputError :message="form.errors.url" />
                             </div>

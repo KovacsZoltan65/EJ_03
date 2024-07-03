@@ -42,13 +42,13 @@ class Subdomain extends Model
 	protected $table = 'subdomains';
 
 	protected $casts = [
-		              'db_port' => 'int',
-		         'notification' => 'bool',
-		             'state_id' => 'int',
-		            'is_mirror' => 'bool',
-		                  'sso' => 'bool',
-		'access_control_system' => 'int',
-		          'last_export' => 'datetime'
+            'db_port' => 'int',
+            'notification' => 'bool',
+            'state_id' => 'int',
+            'is_mirror' => 'bool',
+            'sso' => 'bool',
+            'access_control_system' => 'int',
+            'last_export' => 'datetime'
 	];
 
 	//protected $hidden = [

@@ -170,11 +170,12 @@ class PersonController extends Controller
     {
         // Szerezze meg a felhasználói szerepköröket
         $roles = $this->getUserRoles();
-
+        $person = new Person();
+        
         // Jelenítse meg a 'Persons/Create' nézetet a 'can' változóval és egy új Személy-példánnyal
         return Inertia::render('Persons/Create', [
             'can' => $roles, // Tartalmazza a felhasználó szerepköreit
-            'persons' => new Person(), // Új személy példányt tartalmaz
+            'person' => $person, // Új személy példányt tartalmaz
         ]);
     }
 

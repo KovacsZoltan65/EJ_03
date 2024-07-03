@@ -13,12 +13,13 @@
 
     //import SecondaryButton from '@/Components/SecondaryButton.vue';
     //import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import DefaultButton from '../../Components/buttons/DefaultButton.vue';
-    import GreenButton from '../../Components/buttons/GreenButton.vue';
-    import RedButton from '../../Components/buttons/RedButton.vue';
-    import LightButton from '../../Components/buttons/LightButton.vue';
+    import DefaultButton from '@/Components/buttons/DefaultButton.vue';
+    import GreenButton from '@/Components/buttons/GreenButton.vue';
+    import GreenLink from '../../Components/linkbuttons/GreenLink.vue';
+    import RedButton from '@/Components/buttons/RedButton.vue';
+    import LightButton from '@/Components/buttons/LightButton.vue';
 
-    import SorterIcon from '../../Components/icons/SorterIcon.vue';
+    import SorterIcon from '@/Components/icons/SorterIcon.vue';
 
     const local_storage_column_key = 'ln_persons_grid_columns';
 
@@ -336,20 +337,28 @@
     // Beállítások előkészítése
     function settings_init(){ openSettingsModal(); }
     // SETTINGS MODAL megnyitása
-    function openSettingsModal() { state.showSettingsModal = true; }
+    //function openSettingsModal() { state.showSettingsModal = true; }
+    const openSettingsModal = () => { state.showSettingsModal = true; };
+
     // SETTINGS MODAL bezárása
-    function closeSettingsModal() { state.showSettingsModal = false; }
+    //function closeSettingsModal() { state.showSettingsModal = false; }
+    const closeSettingsModal = () => { state.showSettingsModal = false; };
+
     // EDIT MODAL megnyitása
-    function openEditModal() { state.showEditModal = true; }
+    //function openEditModal() { state.showEditModal = true; }
+
     // EDIT MODAL bezárása
-    function closeEditModal() {
-        cancelEdit();
-        state.showEditModal = false;
-    }
+    //function closeEditModal() {
+    //    cancelEdit();
+    //    state.showEditModal = false;
+    //}
+
     // DELETE MODAL megnyitása
-    function openDeleteModal() { state.showDeleteModal = true; }
+    //function openDeleteModal() { state.showDeleteModal = true; }
+
     // DELETE MODAL bezárása
-    function closeDeleteModal() { state.showDeleteModal = false; }
+    //function closeDeleteModal() { state.showDeleteModal = false; }
+
 </script>
 <template>
     <app-layout :title="$t('persons')">
@@ -376,10 +385,14 @@
 
                         <!-- GOMBOK -->
                         <div class="flex space-x-2 items-center">
-                            <default-button size="text-base" 
-                                            @click="settings_init"
-                            >{{ $t('setup') }}</default-button>
-                            <green-button @click="newPerson_init">+ {{ $t('persons.new') }}</green-button>
+                            <!-- SETUP -->
+                            <default-button size="text-base" @click="settings_init">{{ $t('setup') }}</default-button>
+                            <!-- NEW -->
+                            <!--<green-button @click="newPerson_init">+ {{ $t('persons.new') }}</green-button>-->
+                            <green-link v-if="can.create" 
+                                        type="button" 
+                                        :href="route('persons_create')"
+                            >+ {{ $t('persons.new') }}</green-link>
                         </div>
 
                     </div>
@@ -577,17 +590,15 @@
     </app-layout>
 
     <!-- EDIT MODAL -->
+<!--
     <dialog-modal :show="state.showEditModal" id="edit_modal">
         <template #title>
-            <!--<span v-if="state.editingPerson && state.editingPerson.id">Edit Person</span>
-            <span v-else>Create Person</span>-->
             {{ state.isEdit ? $t('persons_edit') : $t('persons_new') }}
         </template>
 
         <template #content>
             <div class="grid gap-6 mb-6 md:grid-cols-2">
 
-                <!-- hibák -->
                 <div v-if="errors">
                     <div v-for="(v, k) in errors" :key="k" 
                         class="bg-red-500 text-white rounded font-bold mb-4 shadow-lg py-2 px-4 pr-0">
@@ -597,7 +608,6 @@
                     </div>
                 </div>
 
-                <!-- TITLE -->
                 <div>
                     <label for="title" 
                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -612,7 +622,6 @@
                             <span></span>
                 </div>
 
-                <!-- AUTHOR -->
                 <div>
                     <label for="email" 
                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -626,7 +635,6 @@
                             v-model="state.Person.email" required>
                 </div>
 
-                <!-- IMAGE -->
                 <div>
                     <label for="image" 
                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -649,8 +657,9 @@
         </template>
 
     </dialog-modal>
-
+-->
     <!-- CONFIRM DELETE MODAL -->
+<!--
     <dialog-modal :show="state.showDeleteModal" id="delete_modal">
         <template #title>
             {{ $t('persons_delete') }}
@@ -659,15 +668,11 @@
             {{ $t('persons_delete_confirmation') }}
         </template>
         <template #footer>
-        <!--
-            <secondary-button @click="closeDeleteModal()">Cancel</secondary-button>
-            <primary-button type="button" class="ml-3" @click="deletePerson()">Delete</primary-button>
-        -->
             <light-button size="text-xs" type="button" @click="closeDeleteModal()">{{ $t('cancel') }}</light-button>
             <red-button size="text-xs" type="button" @click="deletePerson()">{{ $t('delete') }}</red-button>
         </template>
     </dialog-modal>
-
+-->
     <!-- SETTINGS MODAL -->
     <dialog-modal :show="state.showSettingsModal" id="settings_modal">
         <template #title>{{ $t('setup') }}</template>

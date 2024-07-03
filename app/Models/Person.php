@@ -16,7 +16,17 @@ class Person extends Model
     
     protected $table = 'persons';
     
-    protected $fillable = [];
+    protected $fillable = [
+        'name', 'email', 'password', 'language', 'birthdate'
+    ];
+    
+    protected $attributes = [
+        'name' => '', 
+        'email' => '', 
+        'password' => '', 
+        'language' => 'hu', 
+        'birthdate' => ''
+    ];
     
     protected static $logAttributes = [
         'name','email','password','language','birthdate'
