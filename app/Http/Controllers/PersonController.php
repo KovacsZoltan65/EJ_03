@@ -191,9 +191,8 @@ class PersonController extends Controller
      */
     public function store(StorePersonRequest $request)
     {
-\Log::info('PersonController@store' . print_r($request->validated(), true));
         // Hozzon létre egy új Személy-példányt a kérelemben szereplő ellenőrzött adatok felhasználásával
-        //$this->repository->create($request->validated());
+        $this->repository->create($request->validated());
         
         // Visszairányítja a felhasználót az előző oldalra egy sikerüzenettel
         return redirect()->back()->with('message', __('persons.created'));
@@ -223,7 +222,6 @@ class PersonController extends Controller
      */
     public function edit(Person $person)
     {
-\Log::info('$person: ' . print_r($person, true));
         // Szerezze meg a felhasználói szerepköröket
         $roles = $this->getUserRoles();
         
