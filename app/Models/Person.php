@@ -138,6 +138,7 @@ class Person extends Model
     public function getActivitylogOptions(): LogOptions {
         // Állítsa be az alapértelmezett naplózási beállításokat
         return LogOptions::defaults()
+            ->useLogName(self::$logName)
             // Naplózza az összes kitölthető attribútumot
             ->logAll();
     }
