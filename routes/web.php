@@ -35,15 +35,54 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     // -------------
     // BOOKS
     // -------------
-    Route::post('/getBooks', [App\Http\Controllers\BookController::class, 'getBooks'])->name('getBooks');
+    /**
+     * Route for getting books.
+     *
+     * @url /getBooks
+     * @method POST
+     * @name getBooks
+     * @return \Illuminate\Http\Response
+     */
+    Route::post('/getBooks', [App\Http\Controllers\BookController::class, 'getBooks'])->name('getBooks'); // Endpoint for getting books.
+    
+    /**
+     * Route for uploading books.
+     *
+     * @url /uploadBooks
+     * @method POST
+     * @name upload
+     * @return \Illuminate\Http\Response
+     */
     Route::post('/upload-books', [App\Http\Controllers\BookController::class, 'upload'])->name('upload-books');
+    Route::post('/upload-books-revert', [App\Http\Controllers\BookController::class, 'uploadRevert'])->name('upload-books-revert');
+
+    /**
+     * Resource route for managing books.
+     *
+     * This route provides RESTful endpoints for managing books.
+     * The resource routes are: index, create, store, update, destroy, restore.
+     *
+     * @url /books
+     * @name books
+     * @name books_create
+     * @name books_store
+     * @name books_update
+     * @name books_destroy
+     * @name books_restore
+     */
     Route::resource('books', App\Http\Controllers\BookController::class)
     ->names([
-          'index' => 'books',
-         'create' => 'books_create',
-          'store' => 'books_store',
-         'update' => 'books_update',
+        // Endpoint for getting all books.
+        'index' => 'books',
+        // Endpoint for creating a new book.
+        'create' => 'books_create',
+        // Endpoint for storing a new book.
+        'store' => 'books_store',
+        // Endpoint for updating an existing book.
+        'update' => 'books_update',
+        // Endpoint for deleting an existing book.
         'destroy' => 'books_destroy',
+        // Endpoint for restoring a deleted book.
         'restore' => 'books_restore',
     ]);
     

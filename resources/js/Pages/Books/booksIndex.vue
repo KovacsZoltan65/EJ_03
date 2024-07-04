@@ -20,6 +20,19 @@
 
     import SorterIcon from '../../Components/icons/SorterIcon.vue';
 
+    import vueFilePond from 'vue-filepond';
+    import "filepond/dist/filepond.min.css";
+    import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
+    import 'filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css';
+    import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+    import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+
+    const FilePond = vueFilePond(
+        FilePondPluginFileValidateType,
+        FilePondPluginImagePreview,
+        FilePondPluginFilePoster
+    );
+
     const local_storage_column_key = 'ln_books_grid_columns';
 
     const errors = ref('');
@@ -63,6 +76,7 @@
         selected: [],
         // Összes elem ki van választva
         selectAll: false,
+        myFiles: [],
 
         // Táblázat oszlopai
         columns: {
@@ -137,20 +151,20 @@
         }
     });
     
-    function sordedBook (){
+    const sordedBook = () => {
         return state.Books.sort((a, b) => {
             return a.title.localeCompare(b.title);
         });
     };
 
-    function filteredBooks (){
+    const filteredBooks = () => {
         return state.Books.filter((book) => {
             return book.title.toLowerCase().includes(state.filters.search.toLowerCase());
         });
     };
 
     // Kiválasztás
-    function select(){
+    const select = () => {
         state.selected = [];
         if( !state.selectAll ){
             state.Books.forEach(book => {
@@ -160,7 +174,7 @@
     };
 
     // Táblázat adatainak lekérése
-    function getBooks(page = state.pagination.current_page) {
+    const getBooks = (page = state.pagination.current_page) => {
         axios.post(route('getBooks', {
             filters: state.filters,
             config: {
@@ -177,7 +191,7 @@
     }
 
     // Új könyv előkészítése
-    function newBook_init(){
+    const newBook_init = () => {
         state.Book = newBook();
         state.editingBook = null;
         state.isEdit = false;
@@ -186,7 +200,7 @@
     }
 
     // Új könyv adatai
-    function newBook(){
+    const newBook = () => {
         return {
             id: null,
             title: null,
@@ -196,7 +210,7 @@
     }
 
     // Szerkesztés
-    function editBook(book){
+    const editBook = (book) => {
         
         state.editingBook = JSON.parse(JSON.stringify(book));
         state.Book = state.editingBook;
@@ -206,11 +220,11 @@
     }
 
     // Új rekord mentése
-    function storeBook(){
+    const storeBook = () => {
         errors.value = '';
         axios.post(route('books_store'), state.Book)
         .then(res => {
-            console.log('res', res);
+            //console.log('res', res);
             state.Books.push(res.data.book);
 
             closeEditModal();
@@ -224,7 +238,7 @@
     }
 
     // Szerkesztett adatok mentése
-    function updateBook(){
+    const updateBook = () => {
         //
         errors.value = '';
         axios.put('books_update', {book: state.editingBook.id})
@@ -248,7 +262,7 @@
     }
 
     // Régi mentés rutin
-    function saveBook(){
+    const saveBook = () => {
         
         if(state.editingBook && state.editingBook.id){
             // Rekord frissítése
@@ -293,7 +307,7 @@
     }
 
     // Törlés előkészítése
-    function deleteBook_init(book){
+    const deleteBook_init = (book) => {
         state.editingBook = null;
         state.deletingBook = book;
 
@@ -301,7 +315,7 @@
     }
 
     // Rekord törlése
-    function deleteBook(book){
+    const deleteBook = (book) => {
 
         axios.delete(route('books_delete', {book: state.deletingBook.id}))
         .then((response) => {
@@ -316,28 +330,61 @@
     }
 
     // Szerkesztés megszakítása
-    function cancelEdit(){
+    const cancelEdit = () => {
         state.editingBook = null;
         state.Book = newBook();
     }
 
     // Beállítások előkészítése
-    function settings_init(){ openSettingsModal(); }
+    const settings_init = () => { openSettingsModal(); }
     // SETTINGS MODAL megnyitása
-    function openSettingsModal() { state.showSettingsModal = true; }
+    const openSettingsModal = () => { state.showSettingsModal = true; }
     // SETTINGS MODAL bezárása
-    function closeSettingsModal() { state.showSettingsModal = false; }
+    const closeSettingsModal = () => { state.showSettingsModal = false; }
     // EDIT MODAL megnyitása
-    function openEditModal() { state.showEditModal = true; }
+    const openEditModal = () => { state.showEditModal = true; }
     // EDIT MODAL bezárása
-    function closeEditModal() {
+    const closeEditModal = () => {
         cancelEdit();
         state.showEditModal = false;
     }
     // DELETE MODAL megnyitása
-    function openDeleteModal() { state.showDeleteModal = true; }
+    const openDeleteModal = () => { state.showDeleteModal = true; }
     // DELETE MODAL bezárása
-    function closeDeleteModal() { state.showDeleteModal = false; }
+    const closeDeleteModal = () => { state.showDeleteModal = false; }
+    //
+    const handleFilePondInit = () => {
+        if(state.Book.image) {
+            state.myFiles = [{
+                source: '/' + state.Book.image,
+                options: {
+                    type: 'local',
+                    metadata: {
+                        poster: '/' + state.Book.image
+                    }
+                }
+            }];
+        }else{
+            state.myFiles = [];
+        }
+    };
+
+    const handleFilePondLoad = (response) => {
+        state.Book.image = response;
+    };
+
+    const handleFilePondRemove = (source, load, error) => {
+        this.form.image = '';
+        load();
+    };
+
+    const handleFilePondRevert = (uniqueId, load, error) => {
+        axios.post('/upload-books-revert', {
+            image: state.Book.image
+        });
+        load();
+    };
+
 </script>
 <template>
     <app-layout :title="$t('books')">
@@ -591,7 +638,7 @@
                 </div>
 
                 <!-- IMAGE -->
-                <div>
+                <!--<div>
                     <label for="image" 
                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >{{ $t('image') }}</label>
@@ -599,6 +646,32 @@
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                             :placeholder="$t('image')" 
                             v-model="state.Book.image" required>
+                </div>-->
+                <div>
+                    <label for="image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">IMAGE</label>
+                    <file-pond name="image" id="image" 
+                               ref="pond" v-bind:allow-multiple="false"
+                               accepted-file-types="image/png, image/jpeg"
+                               v-bind:server="{
+                                    url: '',
+                                    timeout: 7000,
+                                    process: {
+                                        url: '/upload-books',
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': $page.props.csrf_token
+                                        },
+                                        withCredentials: false,
+                                        onload: handleFilePondLoad,
+                                        onerror: () => {}
+                                    },
+                                    remove: handleFilePondRemove,
+                                    revert: handleFilePondRevert
+                               }"
+                               v-bind:files="state.myFiles"
+                               v-on:init="handleFilePondInit"
+                    >
+                    </file-pond>
                 </div>
 
             </div>
