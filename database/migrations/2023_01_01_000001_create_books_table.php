@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id()->comment('Rekord azonosító');
             $table->string('title')->comment('Cím');
             $table->string('author')->comment('Szerző');
-            $table->string('image')->comment('Borítókép');
+            $table->string('image')->nullable()->comment('Borítókép');
             
             $table->timestamps();
             $table->softDeletes();

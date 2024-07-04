@@ -26,6 +26,7 @@
     import 'filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css';
     import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
     import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+    import FilePondPluginFilePoster from 'filepond-plugin-file-poster';
 
     const FilePond = vueFilePond(
         FilePondPluginFileValidateType,
@@ -50,6 +51,16 @@
         image: null,
     };
 
+    // Új könyv adatai
+    const newBook = () => {
+        return {
+            id: null,
+            title: null,
+            author: null,
+            image: null,
+        };
+    }
+    
     const state = reactive({
         // Összes rekord
         Books: [],
@@ -197,16 +208,6 @@
         state.isEdit = false;
 
         openEditModal();
-    }
-
-    // Új könyv adatai
-    const newBook = () => {
-        return {
-            id: null,
-            title: null,
-            author: null,
-            image: null,
-        };
     }
 
     // Szerkesztés
