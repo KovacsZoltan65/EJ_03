@@ -41,5 +41,15 @@ class AppServiceProvider extends ServiceProvider
         Inertia::share('csrf_token', function () {
             return csrf_token();
         });
+
+        /**
+         * Observe the Book model with the BookObserver class.
+         *
+         * This allows us to hook into various events of the Book model and
+         * perform actions accordingly.
+         *
+         * @see \App\Observers\BookObserver
+         */
+        \App\Models\Book::observe(\App\Observers\BookObserver::class);
     }
 }

@@ -48,6 +48,13 @@ class Book extends Model
     ];
 
     /**
+     * A naplózási tevékenységek nevének megadása.
+     *
+     * @var string
+     */
+    protected static $logName = 'Books';
+
+    /**
      * A getActivitylogOptions metódus felülbírálása
      * 
      * Ezzel a módszerrel konfigurálhatóak a tevékenységnapló naplózási beállításai.
@@ -59,9 +66,8 @@ class Book extends Model
     {
         // Állítsa be az alapértelmezett naplózási beállításokat
         return LogOptions::defaults()
+            ->useLogName(static::$logName)
             // Naplózza az összes kitölthető attribútumot
-            ->logFillable()
-            // Minden esemény naplózása
-            ->logAllEvents();
+            ->logAll();
     }
 }

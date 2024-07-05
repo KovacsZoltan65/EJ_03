@@ -24,6 +24,7 @@ class UpdateBookRequest extends FormRequest
         return [
             'title' => 'required',
             'author' => 'required',
+            //'image' => 'string',
         ];
     }
 

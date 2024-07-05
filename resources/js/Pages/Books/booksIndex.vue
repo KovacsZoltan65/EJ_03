@@ -20,6 +20,9 @@
 
     import SorterIcon from '../../Components/icons/SorterIcon.vue';
 
+    //===============================
+    // FILEPOND
+    //===============================
     import vueFilePond from 'vue-filepond';
     import "filepond/dist/filepond.min.css";
     import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css";
@@ -33,6 +36,7 @@
         FilePondPluginImagePreview,
         FilePondPluginFilePoster
     );
+    //===============================
 
     const local_storage_column_key = 'ln_books_grid_columns';
 
@@ -162,6 +166,11 @@
         }
     });
     
+    const image_path = (image) => {
+        console.log(image);
+        return '/' + image;
+    };
+
     const sordedBook = () => {
         return state.Books.sort((a, b) => {
             return a.title.localeCompare(b.title);
@@ -212,7 +221,7 @@
 
     // Szerkesztés
     const editBook = (book) => {
-        
+        console.log('editBook', book);
         state.editingBook = JSON.parse(JSON.stringify(book));
         state.Book = state.editingBook;
         state.isEdit = true;
@@ -220,15 +229,67 @@
         openEditModal();
     }
 
+    const saveBook = () => {
+        console.log('saveBook', state.Book);
+
+        if( state.Book.id ){
+            updateBook(state.Book);
+        }else{
+            storeBook(state.Book);
+        }
+    }
+
+    const storeBook = (book) => {
+        console.log('storeBook', book);
+
+        axios.post( route('books_store'), book )
+        .then(res => {
+            console.log('storeBook res.data', res.data);
+            state.Books.push(res.data);
+
+            closeEditModal();
+        })
+        .catch(error => {
+            console.log('storeBook error', error);
+        });
+    }
+
+    const updateBook = (book) => {
+        console.log('updateBook', book);
+
+        axios.put( route('books_update'), book )
+        .then(res => {
+            for(let i = 0; i < state.Books.length; i++){
+                if(state.Books[i].id === state.Book.id){
+                    //state.Books[i] = res.data;
+                    state.Books[i] = book;
+                }
+            }
+
+            closeEditModal();
+        })
+        .catch(error => {
+            console.log('updateBook error', error);
+        });
+    }
+
     // Új rekord mentése
-    const storeBook = () => {
+    /*const storeBook = () => {
+        console.log('storeBook', state.Book);
+        
+        if( state.Book.id == null ){
+            saveBook();
+        }else{
+            updateBook();
+        }
         errors.value = '';
         axios.post(route('books_store'), state.Book)
         .then(res => {
             //console.log('res', res);
-            state.Books.push(res.data.book);
+            //state.Books.push(res.data.book);
 
             closeEditModal();
+            getBooks();
         })
         .catch(e => {
             if( e.response.status == 422 ){
@@ -239,8 +300,8 @@
     }
 
     // Szerkesztett adatok mentése
-    const updateBook = () => {
-        //
+    /*const updateBook = () => {
+        console.log('updateBook');
         errors.value = '';
         axios.put('books_update', {book: state.editingBook.id})
         .then(res => {
@@ -260,11 +321,11 @@
                 errors.value = e.response.data.errors;
             }
         });
-    }
+    }*/
 
     // Régi mentés rutin
-    const saveBook = () => {
-        
+    /*const saveBook = () => {
+        console.log('saveBook');
         if(state.editingBook && state.editingBook.id){
             // Rekord frissítése
             axios.put(route('books_update', {book: state.editingBook.id}), {
@@ -305,7 +366,7 @@
 
         cancelEdit();
         return;
-    }
+    }*/
 
     // Törlés előkészítése
     const deleteBook_init = (book) => {
@@ -316,7 +377,7 @@
     }
 
     // Rekord törlése
-    const deleteBook = (book) => {
+    const deleteBook = () => {
 
         axios.delete(route('books_delete', {book: state.deletingBook.id}))
         .then((response) => {
@@ -342,8 +403,12 @@
     const openSettingsModal = () => { state.showSettingsModal = true; }
     // SETTINGS MODAL bezárása
     const closeSettingsModal = () => { state.showSettingsModal = false; }
+    
     // EDIT MODAL megnyitása
-    const openEditModal = () => { state.showEditModal = true; }
+    const openEditModal = () => {
+        state.showEditModal = true;
+    }
+
     // EDIT MODAL bezárása
     const closeEditModal = () => {
         cancelEdit();
@@ -506,6 +571,7 @@
                                             </a>
                                         </div>
                                     </th>
+
                                     <!-- TITLE -->
                                     <th scope="col" class="px-6 py-3" v-show="state.columns.title.is_visible">
                                         <div class="flex items-center">
@@ -515,6 +581,7 @@
                                             </a>
                                         </div>
                                     </th>
+
                                     <!-- AUTHOR -->
                                     <th scope="col" class="px-6 py-3" v-show="state.columns.author.is_visible">
                                         <div class="flex items-center">
@@ -524,8 +591,10 @@
                                             </a>
                                         </div>
                                     </th>
+                                    
                                     <!-- IMAGE -->
-                                    <th scope="col" class="px-6 py-3" v-show="state.columns.image.is_visible">
+                                    <th scope="col" class="px-6 py-3" 
+                                        v-show="state.columns.image.is_visible">
                                         <div class="flex items-center">
                                             {{ $t(state.columns.image.label) }}
                                             <a href="#" v-show="state.columns.image.is_sortable">
@@ -533,6 +602,7 @@
                                             </a>
                                         </div>
                                     </th>
+
                                     <!-- ACTION -->
                                     <th scope="col" class="px-6 py-3" width="250px" v-show="state.columns.action.is_visible">
                                         <div class="flex items-center">
@@ -559,12 +629,21 @@
                                     <td class="px-4 py-2 border" v-show="state.columns.id.is_visible">{{ book.id }}</td>
                                     <td class="px-4 py-2 border" v-show="state.columns.title.is_visible">{{ book.title }}</td>
                                     <td class="px-4 py-2 border" v-show="state.columns.author.is_visible">{{ book.author }}</td>
-                                    <td class="px-4 py-2 border" v-show="state.columns.image.is_visible">{{ book.image }}</td>
+                                    
+                                    <!-- IMAGE -->
+                                    <td class="px-4 py-2 border w-20" 
+                                        v-show="state.columns.image.is_visible">
+                                        <img v-if="book.image" 
+                                             :src="image_path(book.image)" alt="" />
+                                    </td>
+
                                     <td class="px-4 py-2 w-45 border" width="250px" 
                                         v-show="state.columns.action.is_visible">
                                         <div type="justify-start lg:justify-end" no-wrap>
-                                            <green-button class="mt-1" size="text-xs" @click="editBook(book)">{{ $t('edit') }}</green-button>
-                                            <red-button class="mt-1" size="text-xs" @click="deleteBook_init(book)">{{ $t('delete') }}</red-button>
+                                            <green-button class="mt-1" size="text-xs" 
+                                                          @click="editBook(book)">{{ $t('edit') }}</green-button>
+                                            <red-button class="mt-1" size="text-xs" 
+                                                        @click="deleteBook_init(book)">{{ $t('delete') }}</red-button>
                                         </div>
                                     </td>
                                 </tr>
@@ -649,8 +728,10 @@
                             v-model="state.Book.image" required>
                 </div>-->
                 <div>
-                    <label for="image" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">IMAGE</label>
-                    <file-pond name="image" id="image" 
+                    <label for="image" 
+                           class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >{{ $t('image') }}</label>
+                    <file-pond name="imageFilepond" id="imageFilepond" 
                                ref="pond" v-bind:allow-multiple="false"
                                accepted-file-types="image/png, image/jpeg"
                                v-bind:server="{
@@ -664,7 +745,9 @@
                                         },
                                         withCredentials: false,
                                         onload: handleFilePondLoad,
-                                        onerror: () => {}
+                                        onerror: (error) => {
+                                            console.log(error);
+                                        }
                                     },
                                     remove: handleFilePondRemove,
                                     revert: handleFilePondRevert
@@ -679,10 +762,15 @@
         </template>
 
         <template #footer>
-            <light-button size="text-xs" type="button" @click="closeEditModal()"
+            
+            <!-- CANCEL -->
+            <light-button size="text-xs" type="button" 
+                          @click="closeEditModal()"
             >{{ $t('cancel') }}</light-button>
+            
+            <!-- SAVE -->
             <green-button size="text-xs" type="button" 
-                          @click="storeBook()"
+                          @click="saveBook()"
             >{{ state.isEdit ? $t('books_update') : $t('books_create') }}</green-button>
         </template>
 

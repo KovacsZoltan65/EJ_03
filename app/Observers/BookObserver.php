@@ -19,7 +19,35 @@ class BookObserver
      */
     public function updated(Book $book): void
     {
-        //
+        // Szerezze meg a könyv jelenlegi és eredeti attribútumait
+        $currentAttributes = $book->getAttributes();
+        $originalAttributes = $book->getOriginalAttributes();
+
+        // Ellenőrizze, hogy a kép megváltozott-e
+        $imageChanged = $currentAttributes['image'] !== $originalAttributes['image'];
+
+        if ($imageChanged) {
+            // Ellenőrizze, hogy hozzáadtak-e új képet
+            $imageAdded = empty($originalAttributes['image']) && !empty($currentAttributes['image']);
+
+            // Ellenőrizze, hogy a képet törölték-e
+            $imageDeleted = !empty($originalAttributes['image']) && empty($currentAttributes['image']);
+
+            if ($imageAdded) {
+                // Új kép hozzáadásakor naplózza az eseményt
+                \Log::info('Képet akarnak feltölteni');
+            } elseif ($imageDeleted) {
+                // A kép törlésekor naplózza az eseményt
+                \Log::info('Törölték a feltöltött képet');
+                // Törölje a régi képet
+                unlink(public_path($originalAttributes['image']));
+            } else {
+                // A kép frissítésekor naplózza az eseményt
+                \Log::info('Megváltoztatták a képet');
+                // Törölje a régi képet
+                unlink(public_path($originalAttributes['image']));
+            }
+        }
     }
 
     /**
@@ -27,7 +55,9 @@ class BookObserver
      */
     public function deleted(Book $book): void
     {
-        //
+        if( $book->image && file_exists(public_path($book->image)) ) {
+            unlink(public_path($book->image));
+        }
     }
 
     /**

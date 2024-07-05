@@ -139,9 +139,14 @@ class BookController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreBookRequest $request) {
-        $this->repository->create($request->validated());
+//\Log::info('$request->all(): ' . print_r($request->all(), true));
+        //$this->repository->create($request->validated());
+        $book = $this->repository->create($request->all());
 
-        return redirect()->back()->with('message', __('books.created'));
+        $this->processImage($request);
+        
+        //return redirect()->back()->with('message', __('books.created'));
+        return response()->json($book, Response::HTTP_OK);
     }
 
     /**
@@ -180,8 +185,12 @@ class BookController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateBookRequest $request, int $id) {
-        $book = $this->repository->update($request->validated(), $id);
+\Log::info('$request->all(): ' . print_r($request->all(), true));
+        //$book = $this->repository->update($request->validated(), $id);
+        $book = $this->repository->update($request->all(), $id);
 
+        $this->processImage($request);
+        
         return response()->json($book, Response::HTTP_OK);
     }
 
@@ -314,7 +323,7 @@ class BookController extends Controller {
      * @return void
      */
     protected function processImage(Request $request) {
-        //
+\Log::info('processImage');
         if( $image = $request->get('image') ) {
             $path = storage_path('app/public/' . $image);
             if( file_exists($path) ) {

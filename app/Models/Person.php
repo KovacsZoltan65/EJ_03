@@ -82,16 +82,12 @@ class Person extends Model
     protected static $logAttributes = [
         // The name of the person
         'name',
-
         // The email address of the person
         'email',
-
         // The password of the person
         'password',
-
         // The language preference of the person
         'language',
-
         // The birthdate of the person
         'birthdate',
     ];
@@ -104,10 +100,8 @@ class Person extends Model
     protected static $recordEvents = [
         // Log when a person is created
         'created',
-
         // Log when a person is updated
         'updated',
-
         // Log when a person is deleted
         'deleted',
     ];
