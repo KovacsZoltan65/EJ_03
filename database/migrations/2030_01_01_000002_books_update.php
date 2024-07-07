@@ -18,13 +18,20 @@ return new class extends Migration
             TRIGGER ej_03.books_after_update AFTER UPDATE ON ej_03.books FOR EACH ROW
             BEGIN
                 IF @need_log = 1 THEN
-                    INSERT INTO change_log
-                    ( id, table_name, operation, record_id, old_data, new_data, change_date) VALUES
-                    (NULL, 'books', 'UPDATE', OLD.id, 
-                        JSON_OBJECT('id', OLD.id, 'title', OLD.title, 'author', OLD.author, 'image', OLD.image), 
-                        JSON_OBJECT('id', NEW.id, 'title', NEW.title, 'author', NEW.author, 'image', NEW.image), 
-                        NOW()
-                    );
+                
+                    SET @old_md5 = MD5(CONCAT(OLD.title, OLD.author, OLD.image));
+                    SET @new_md5 = MD5(CONCAT(NEW.title, NEW.author, NEW.image));
+                    
+                    IF @old_md5 <> @new_md5 THEN
+                        INSERT INTO change_log
+                        ( id, table_name, operation, record_id, old_data, new_data, change_date) VALUES
+                        (NULL, 'books', 'UPDATE', OLD.id, 
+                            JSON_OBJECT('id', OLD.id, 'title', OLD.title, 'author', OLD.author, 'image', OLD.image), 
+                            JSON_OBJECT('id', NEW.id, 'title', NEW.title, 'author', NEW.author, 'image', NEW.image), 
+                            NOW()
+                        );
+                    END IF;
+                    
                 END IF;
             END
         ");
