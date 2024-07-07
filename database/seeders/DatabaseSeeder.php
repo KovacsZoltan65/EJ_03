@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        \DB::unprepared('SET @need_log = 1;  -- Naplózás engedélyezése');
+        
         $this->call([
             UserSeeder::class,              // OK
             BookSeeder::class,              // OK
@@ -39,5 +41,7 @@ class DatabaseSeeder extends Seeder
             //CitiesTableSeeder::class,
             PersonsSeeder::class,
         ]);
+        
+        //\DB::unprepared('SET @need_log = 0;  -- Naplózás letiltása');
     }
 }
