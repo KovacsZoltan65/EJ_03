@@ -245,7 +245,7 @@
         axios.post( route('books_store'), book )
         .then(res => {
             console.log('storeBook res.data', res.data);
-            state.Books.push(res.data);
+            //state.Books.push(res.data);
 
             closeEditModal();
         })
