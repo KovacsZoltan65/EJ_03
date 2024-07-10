@@ -236,6 +236,6 @@ class UserController extends Controller
     
     public function changeRoles(Request $request) {
         //\Log::info('id: ' . print_r($id, true));
-        \Log::info('request: ' . print_r($request, true));
+        //\Log::info('request: ' . print_r($request, true));
     }
 }

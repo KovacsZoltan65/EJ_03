@@ -139,7 +139,6 @@ class BookController extends Controller {
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreBookRequest $request) {
-//\Log::info('$request->all(): ' . print_r($request->all(), true));
         //$this->repository->create($request->validated());
         $book = $this->repository->create($request->all());
 
@@ -185,7 +184,9 @@ class BookController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(UpdateBookRequest $request, int $id) {
-\Log::info('$request->all(): ' . print_r($request->all(), true));
+//\Log::info('$request->all(): ' . print_r($request->all(), true));
+//\Log::info('$id: ' . print_r($id, true));
+
         //$book = $this->repository->update($request->validated(), $id);
         $book = $this->repository->update($request->all(), $id);
 
@@ -323,7 +324,6 @@ class BookController extends Controller {
      * @return void
      */
     protected function processImage(Request $request) {
-\Log::info('processImage');
         if( $image = $request->get('image') ) {
             $path = storage_path('app/public/' . $image);
             if( file_exists($path) ) {

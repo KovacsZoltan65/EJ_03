@@ -32,6 +32,8 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
     
     public function update(array $attributes, $id)
     {
+\Log::info('BaseRepository@update $attributes: ' . print_r($attributes, true));
+\Log::info('BaseRepository@update $id: ' . print_r($id, true));
         // Have to skip presenter to get a model not some data
         $temporarySkipPresenter = $this->skipPresenter;
         $this->skipPresenter(true);

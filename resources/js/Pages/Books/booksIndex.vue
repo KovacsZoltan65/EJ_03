@@ -211,17 +211,42 @@
     }
 
     // Új könyv előkészítése
+    /**
+     * Initialize the process of creating a new book.
+     *
+     * This function sets the `Book` property to a new book object,
+     * clears the `editingBook` property, and sets the `isEdit` property to false.
+     * It then opens the edit modal.
+     *
+     * @return {void}
+     */
     const newBook_init = () => {
+        // Set the `Book` property to a new book object
         state.Book = newBook();
+        
+        // Clear the `editingBook` property
         state.editingBook = null;
+        
+        // Set the `isEdit` property to false
         state.isEdit = false;
-
+        
+        // Open the edit modal
         openEditModal();
     }
 
     // Szerkesztés
+    /**
+     * Edit the book data and open the edit modal.
+     *
+     * This function sets the `editingBook` property to a copy of the book data passed in.
+     * It then sets the `Book` property to the same data and sets the `isEdit` property to true.
+     * Finally, it opens the edit modal.
+     *
+     * @param {Object} book - The book data to edit.
+     */
     const editBook = (book) => {
         console.log('editBook', book);
+        // Make a copy of the book data so we don't modify the original
         state.editingBook = JSON.parse(JSON.stringify(book));
         state.Book = state.editingBook;
         state.isEdit = true;
@@ -229,47 +254,77 @@
         openEditModal();
     }
 
+    /**
+     * Save the book data by either updating an existing book or storing a new book.
+     *
+     * This function checks if the book data has an ID. If it does, it calls the
+     * `updateBook` function to update the book in the database. If it doesn't, it
+     * calls the `storeBook` function to store a new book in the database.
+     */
     const saveBook = () => {
-        console.log('saveBook', state.Book);
-
+        // Check if the book data has an ID.
+        // If it does, call the updateBook function to update the book in the database.
+        // If it doesn't, call the storeBook function to store a new book in the database.
+        
         if( state.Book.id ){
+            // Call the updateBook function to update the book in the database.
             updateBook(state.Book);
         }else{
+            // Call the storeBook function to store a new book in the database.
             storeBook(state.Book);
         }
     }
 
+    /**
+     * Store a new book in the database and update the list of books in the state.
+     *
+     * @param {Object} book - The book data to be stored.
+     */
     const storeBook = (book) => {
+        // Log the book data being stored
         console.log('storeBook', book);
 
+        // Send a POST request to the 'books_store' route with the book data
         axios.post( route('books_store'), book )
         .then(res => {
+            // Log the response data from the server
             console.log('storeBook res.data', res.data);
+            // Add the new book to the list of books in the state
             state.Books.push(res.data);
 
+            // Close the edit modal
             closeEditModal();
         })
         .catch(error => {
+            // Log any errors that occur during the request
             console.log('storeBook error', error);
         });
     }
 
+    /**
+     * Update the book data in the database and update the list of books in the state.
+     *
+     * @param {Object} book - The book data to be updated.
+     */
     const updateBook = (book) => {
-        console.log('updateBook', book);
-
-        axios.put( route('books_update'), book )
-        .then(res => {
-            for(let i = 0; i < state.Books.length; i++){
-                if(state.Books[i].id === state.Book.id){
-                    //state.Books[i] = res.data;
-                    state.Books[i] = book;
-                }
-            }
-
-            closeEditModal();
+        
+        axios.put(route('books_update', {book: book.id}), {
+            title: state.editingBook.title,
+            author: state.editingBook.author,
+            image: state.editingBook.image,
         })
-        .catch(error => {
-            console.log('updateBook error', error);
+        .then(res => {
+            // Find the index of the book in the state's books list that has the same id
+            const index = state.Books.findIndex(
+                (b) => b.id === res.data.id
+            );
+            // Update the book data in the state's books list
+            if (index !== -1) {
+                state.Books[index] = res.data;
+            }
+        })
+        .catch(e => {
+            console.log('updateBook error: ', e);
         });
     }
 

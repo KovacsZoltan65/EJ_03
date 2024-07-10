@@ -198,7 +198,7 @@ class SubdomainController extends Controller {
     //}
 
     public function store(StoreSubdomainRequest $request) {
-\Log::info('Subdomain store');
+//\Log::info('Subdomain store');
         //$subdomain = $this->repository->create($request->all());
 
         return redirect()->back()->with('message', __('subdomain_created'));
