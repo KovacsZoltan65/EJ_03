@@ -135,6 +135,14 @@ composer require cheesegrits/iseed --dev
 php artisan iseed books, ...
 
 // ---------------------------------------
+// MYSQL TRIGGERS
+// ---------------------------------------
+php artisan make:migration books_log
+php artisan make:migration books_insert
+php artisan make:migration books_update
+php artisan make:migration books_delete
+
+// ---------------------------------------
 // REGIONS, CITIES, COUNTRIES
 // ---------------------------------------
 mysql -u root ej_03 < d:\wamp64\www\softc\EJ_03\world.sql

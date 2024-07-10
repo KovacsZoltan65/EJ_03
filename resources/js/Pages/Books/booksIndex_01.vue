@@ -289,8 +289,12 @@
         .then(res => {
             // Log the response data from the server
             console.log('storeBook res.data', res.data);
+<<<<<<< HEAD:resources/js/Pages/Books/booksIndex.vue
             // Add the new book to the list of books in the state
             state.Books.push(res.data);
+=======
+            //state.Books.push(res.data);
+>>>>>>> eaf2ea419b9a128699d2f573423a3c685d873da8:resources/js/Pages/Books/booksIndex_01.vue
 
             // Close the edit modal
             closeEditModal();
