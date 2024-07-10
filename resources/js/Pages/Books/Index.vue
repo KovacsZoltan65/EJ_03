@@ -122,6 +122,10 @@
         });
     };
 
+    const image_path = (image) => {
+        console.log(image);
+        return '/' + image;
+    };
 </script>
 
 <template>
