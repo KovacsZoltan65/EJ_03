@@ -79,9 +79,30 @@
 
     // Szerkesztés megszakítása
     const cancelEdit = () => {
+        state.editingBook = null;
         state.Book = newBook();
     };
 
+    /**
+     * Save the book data by either updating an existing book or storing a new book.
+     *
+     * This function checks if the book data has an ID. If it does, it calls the
+     * `updateBook` function to update the book in the database. If it doesn't, it
+     * calls the `storeBook` function to store a new book in the database.
+     */
+    const saveBook = () => {
+        // Check if the book data has an ID.
+        // If it does, call the updateBook function to update the book in the database.
+        // If it doesn't, call the storeBook function to store a new book in the database.
+        
+        if( state.Book.id ){
+            // Call the updateBook function to update the book in the database.
+            updateBook(state.Book);
+        }else{
+            // Call the storeBook function to store a new book in the database.
+            storeBook(state.Book);
+        }
+    }
     
     /**
      * Store a new book in the database and update the list of books in the state.
@@ -92,8 +113,68 @@
         // Log the book data being stored
         console.log('storeBook', book);
 
+        // Send a POST request to the 'books_store' route with the book data
+        axios.post( route('books_store'), book )
+        .then(res => {
+            // Log the response data from the server
+            console.log('storeBook res.data', res.data);
+            // Add the new book to the list of books in the state
+            state.Books.push(res.data);
+
+            // Close the edit modal
+            closeEditModal();
+        })
+        .catch(error => {
+            // Log any errors that occur during the request
+            console.log('storeBook error', error);
+        });
+    }
+
+    /**
+     * Update the book data in the database and update the list of books in the state.
+     *
+     * @param {Object} book - The book data to be updated.
+     */
+    const updateBook = (book) => {
+        
+        axios.put(route('books_update', {book: book.id}), {
+            title: state.editingBook.title,
+            author: state.editingBook.author,
+            image: state.editingBook.image,
+        })
+        .then(res => {
+            // Find the index of the book in the state's books list that has the same id
+            const index = state.Books.findIndex(
+                (b) => b.id === res.data.id
+            );
+            // Update the book data in the state's books list
+            if (index !== -1) {
+                state.Books[index] = res.data;
+            }
+        })
+        .catch(e => {
+            console.log('updateBook error: ', e);
+        });
+    }
+
+    const deleteBook_init = (book) => {
+        state.editingBook = null;
+        state.deletingBook = book;
+
+        openDeleteModal();
+    }
 
     // Törlés
+    const deleteBook = () => {
+        axios.delete(route('books_delete', {book: state.deletingBook.id}))
+        .then(response => {
+            state.Books = state.Books.filter(book => book.id !== state.deletingBook.id);
+            state.deletingBook = null;
+        })
+        .catch(error => {
+            console.log('deleteBook error', error);
+        });
+    };
 
     // Visszaállítás
     const restoreBook = () => {};
@@ -124,9 +205,52 @@
         });
     };
 
-    const image_path = (image) => {
-        console.log(image);
-        return '/' + image;
+    const settings_init = () => { openSettingsModal(); }
+    const openSettingsModal = () => { state.showSettingsModal = true; }
+    const closeSettingsModal = () => { state.showSettingsModal = false; }
+
+    const openEditModal = () => { state.showEditModal = true; }
+    const closeEditModal = () => {
+        cancelEdit();
+        state.showEditModal = false;
+    }
+
+    const openDeleteModal = () => { state.showDeleteModal = true; }
+    const closeDeleteModal = () => { state.showDeleteModal = false; }
+
+    // ==============================
+    // FÁJL FELTÖLTÉS
+    // ==============================
+    const handleFilePondInit = () => {
+        if(state.Book.image) {
+            state.myFiles = [{
+                source: '/' + state.Book.image,
+                options: {
+                    type: 'local',
+                    metadata: {
+                        poster: '/' + state.Book.image
+                    }
+                }
+            }];
+        }else{
+            state.myFiles = [];
+        }
+    };
+
+    const handleFilePondLoad = (response) => {
+        state.Book.image = response;
+    };
+
+    const handleFilePondRemove = (source, load, error) => {
+        this.form.image = '';
+        load();
+    };
+
+    const handleFilePondRevert = (uniqueId, load, error) => {
+        axios.post('/upload-books-revert', {
+            image: state.Book.image
+        });
+        load();
     };
 </script>
 
