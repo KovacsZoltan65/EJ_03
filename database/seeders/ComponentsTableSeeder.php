@@ -22,7 +22,7 @@ class ComponentsTableSeeder extends Seeder
         ];
         $count = count($arr_components);
         
-        $this->command->warn(PHP_EOL . 'Creating components...');
+        $this->command->warn(PHP_EOL . __('components_creating_seed'));
         
         $this->command->getOutput()->progressStart($count);
         foreach($arr_components as $component)
@@ -32,6 +32,6 @@ class ComponentsTableSeeder extends Seeder
         }
         $this->command->getOutput()->progressFinish();
         
-        $this->command->info(PHP_EOL . 'Components created');
+        $this->command->info(PHP_EOL . __('components_created_seed'));
     }
 }

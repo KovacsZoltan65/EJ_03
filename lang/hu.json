@@ -149,9 +149,13 @@
     "books_description": "Nyílvántartott könyvek oldala! Itt listázhat, létrehozhat, frissíthet vagy törölhet könyvet!",
     "books_new": "Új könyv",
     "books_edit": "Könyv szerkesztése",
+    
+    "book_creating": "Könyvek létrehozása ...",
     "books_create": "Könyv létrehozása",
     "books_created": "A könyv létrejött",
-    "books_update": "Könyv frissítése",
+    "books_created_seed": "A könyvek létrejöttek",
+    
+        "books_update": "Könyv frissítése",
     "books_updated": "Könyv frissítve",
     "books_delete": "Könyv törlése",
     "books_deleted": "A könyv törölve",
@@ -233,5 +237,8 @@
     "validation.url": "A(z) :attribute érvénytelen link.",
     "validation.integer": "A(z) :attribute értéke szám kell, hogy legyen!",
     
-    "error.not_implemented": "Még nincs megvalósítva"
+    "error.not_implemented": "Még nincs megvalósítva",
+    
+    "components_creating_seed": "Komponensek létrehozása...",
+    "components_created_seed": "A komponenseket létrehoztam"
 }

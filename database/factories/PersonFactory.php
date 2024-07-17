@@ -18,12 +18,20 @@ class PersonFactory extends Factory
     {
         $password = 'password';
         
+        $need_note = (fake()->numberBetween(0, 1) == 1) ? true : false;
+        
         return [
             'name' => fake()->name(),
             'email' => fake()->email(),
             'password' => fake()->password(),
             'language' => fake()->languageCode(),
             'birthdate' => fake()->dateTimeBetween('1960-01-01', '2000-12-31'),
+            'note' => ( $need_note ) ? json_encode([
+                'lat' => fake()->latitude(),
+                'long' => fake()->longitude(),
+                'CardNumber' => fake()->creditCardNumber,
+                'Color name' => fake()->colorName,
+            ]) : null,
         ];
     }
 }

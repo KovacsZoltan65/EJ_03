@@ -100,61 +100,50 @@ class PersonController extends Controller
         ]);
     }
 
-    public function getPersons(Request $request){
-        // Beállítások
-        $config = $request->get('config', []);
-        // Szűrők és keresések
-        $filters = $request->get('filters', []);
-        
-        // Szűrés kezelése
-        if (count($filters) > 0) {
-            // Ha van keresési paraméter, akkor...
-            if (isset($filters['search'])) {
-                // A keresési paramétert átteszem egy változóba
-                $value = $filters['search'];
+    /**
+     * Get the list of persons.
+     *
+     * This method is used to fetch the list of persons based on the
+     * configuration and filters provided.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPersons(Request $request)
+    {
+        $config = $request->input('config', []);
+        $filters = $request->input('filters', []);
 
-                // Keresési paraméter érvégyesítése az 'author' és 'title' mezőkre
-                $this->repository->where('author', 'LIKE', "%$value%");
-                $this->repository->orWhere('title', 'LIKE', "%$value%");
-            }
+        // Get the query builder instance
+        $query = $this->repository->query();
 
-            // ----------------
-            // RENDEZÉS
-            // ----------------
-            // Rendezés a 'name' oszlop szerint
-            $column = 'id';
-            // Ha van más beállítás, akkor...
-            if (isset($filters['column'])) {
-                // azt állítom be
-                $column = $filters['column'];
-            }
-
-            // Alap rendezési irány
-            $direction = 'asc';
-            // Ha van más beállítás, akkor...
-            if (isset($filters['direction'])) {
-                // azt állítom be
-                $direction = $filters['direction'];
-            }
-            // Rendezés érvényesítése
-            $this->repository->orderBy($column, $direction);
+        // Apply the search filter
+        if (isset($filters['search'])) {
+            $query->where(function ($query) use ($filters) {
+                $query->where('author', 'LIKE', "%{$filters['search']}%")
+                    ->orWhere('title', 'LIKE', "%{$filters['search']}%");
+            });
         }
 
-        // Oldaltörés értékének kezelése
-        $per_page = count($config) != 0 && isset($config['per_page']) ? $config['per_page'] : config('app.per_page');
+        // Apply the column filter
+        if (isset($filters['column'])) {
+            // Sort the result by the specified column
+            // If the direction is not specified, sort in ascending order
+            $query->orderBy($filters['column'], $filters['direction'] ?? 'asc');
+        }
 
-        // Adatok lekérése
-        $persons = $this->repository->paginate($per_page);
-        
-        // Adatcsomag összeállítása
-        $data = [
+        // Get the number of items to display per page
+        $per_page = $config['per_page'] ?? config('app.per_page');
+
+        // Get the list of persons
+        $persons = $query->paginate($per_page);
+
+        // Return the result as a JSON response
+        return response()->json([
             'persons' => $persons,
             'config' => $config,
             'filters' => $filters,
-        ];
-        
-        // Adatcsomag visszaküldése
-        return response()->json($data, Response::HTTP_OK);
+        ], Response::HTTP_OK);
     }
     
     /**
@@ -191,7 +180,8 @@ class PersonController extends Controller
      */
     public function store(StorePersonRequest $request)
     {
-        // Hozzon létre egy új Személy-példányt a kérelemben szereplő ellenőrzött adatok felhasználásával
+        // Hozzon létre egy új Személy-példányt a kérelemben szereplő 
+        // ellenőrzött adatok felhasználásával
         $this->repository->create($request->validated());
         
         // Visszairányítja a felhasználót az előző oldalra egy sikerüzenettel
@@ -201,7 +191,8 @@ class PersonController extends Controller
     /**
      * Jelenítse meg a megadott erőforrást.
      *
-     * Ez a metódus jelenleg nincs implementálva, és BadMethodCallException kivételt dob
+     * Ez a metódus jelenleg nincs implementálva, 
+     * és BadMethodCallException kivételt dob
      * nem implementált hibaüzenettel.
      *
      * @param string $id A megjelenítendő személy azonosítója

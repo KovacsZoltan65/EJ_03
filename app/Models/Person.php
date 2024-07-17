@@ -72,6 +72,7 @@ class Person extends Model
         // The birthdate of the person.
         // Defaults to an empty string.
         'birthdate' => '',
+        'note' => null,
     ];
     
     /**
@@ -90,6 +91,7 @@ class Person extends Model
         'language',
         // The birthdate of the person
         'birthdate',
+        'note'
     ];
     
     /**

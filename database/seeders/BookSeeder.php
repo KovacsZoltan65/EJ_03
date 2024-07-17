@@ -20,7 +20,7 @@ class BookSeeder extends Seeder
     {
         \DB::table('books')->truncate();
         
-        $this->command->warn(PHP_EOL . 'Creating books...');
+        $this->command->warn(PHP_EOL . __('book_creating') );
         
         $count = 1000;
         
@@ -34,6 +34,6 @@ class BookSeeder extends Seeder
         
         $this->command->getOutput()->progressFinish();
         
-        $this->command->info(PHP_EOL . 'Books created');
+        $this->command->info(PHP_EOL . __('books_created_seed'));
     }
 }

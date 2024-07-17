@@ -149,8 +149,12 @@
     "books_description": "Open books page! Here you can list, create, update or delete a book!",
     "books_new": "New Book",
     "books_edit": "Edit Book",
+    
+    "book_creating": "Creating Books...",
     "books_create": "Create Book",
     "books_created": "Book Created",
+    "books_created_seed": "Books Created",
+    
     "books_update": "Update Book",
     "books_updated": "Book Updated",
     "books_delete": "Delete Book",
@@ -232,5 +236,8 @@
     "validation.url": "The :attribute format is invalid.",
     "validation.integer": "The :attribute must be an integer.",
     
-    "error.not_implemented": "Not implemented yet"
+    "error.not_implemented": "Not implemented yet",
+    
+    "components_creating_seed": "Creating components...",
+    "components_created_seed": "Components created"
 }
